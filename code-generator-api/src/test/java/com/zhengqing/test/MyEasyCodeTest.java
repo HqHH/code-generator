@@ -1,6 +1,13 @@
 package com.zhengqing.test;
 
-import com.zhengqing.modules.common.annotation.UIColumn;
+import com.baomidou.mybatisplus.generator.AutoGenerator;
+import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
+import com.baomidou.mybatisplus.generator.config.GlobalConfig;
+import com.baomidou.mybatisplus.generator.config.PackageConfig;
+import com.baomidou.mybatisplus.generator.config.StrategyConfig;
+import com.baomidou.mybatisplus.generator.config.rules.DbType;
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
+import com.project.modules.common.annotation.UIColumn;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -136,6 +143,49 @@ public class MyEasyCodeTest {
         }
         return list;
     }
+
+    @Test
+    public void generateCode() {
+        String packageName = "com.project";
+        boolean serviceNameStartWithI = false;//user -> UserService, 设置成true: user -> IUserService
+        generateByTables(serviceNameStartWithI, packageName, "t_sys_user", "sysUser");//修改为你的表名
+    }
+
+    private void generateByTables(boolean serviceNameStartWithI, String packageName, String... tableNames) {
+        GlobalConfig config = new GlobalConfig();
+        String dbUrl = "jdbc:mysql://110.86.15.178:3306/code-generator";
+        DataSourceConfig dataSourceConfig = new DataSourceConfig();
+        dataSourceConfig.setDbType(DbType.MYSQL)
+                .setUrl(dbUrl)
+                .setUsername("root")
+                .setPassword("ajhyzsc2019!@#")
+                .setDriverName("com.mysql.jdbc.Driver");
+        StrategyConfig strategyConfig = new StrategyConfig();
+        strategyConfig
+                .setCapitalMode(true)
+                .setEntityLombokModel(false)
+                .setDbColumnUnderline(true)
+                .setNaming(NamingStrategy.underline_to_camel)
+                .setInclude(tableNames);//修改替换成你需要的表名，多个表名传数组
+        config.setActiveRecord(false)
+                .setEnableCache(false)
+                .setAuthor("hqh")
+                .setOutputDir("E:\\dev\\stsdev\\spring-boot-mp\\src\\main\\java")
+                .setFileOverride(true);
+        if (!serviceNameStartWithI) {
+            config.setServiceName("%sService");
+        }
+        new AutoGenerator().setGlobalConfig(config)
+                .setDataSource(dataSourceConfig)
+                .setStrategy(strategyConfig)
+                .setPackageInfo(
+                        new PackageConfig()
+                                .setParent(packageName)
+                                .setController("controller")
+                                .setEntity("entity")
+                ).execute();
+    }
+
 
 }
 
