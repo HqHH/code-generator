@@ -55,6 +55,11 @@ public class ShiroServiceImpl implements ShiroService {
         filterChainDefinitionMap.put("/v2/**","anon");
         filterChainDefinitionMap.put("/static/**", "anon");
 
+        //app用户端接口不拦截  由拦截器控制
+        filterChainDefinitionMap.put("/clientApi/**", "anon");
+        //app物业端接口不拦截  由拦截器控制
+        filterChainDefinitionMap.put("/sysApi/**", "anon");
+
         // 登陆
         filterChainDefinitionMap.put("/api/auth/login/**", "anon");
         // 三方登录
